@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Premium Open When Letters</title>
+<style>
+:root{--pink:#ff4f87;--light:#fff0f6;--dark:#4a3b44}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff5f8,#ffd6e8);color:var(--dark);overflow-x:hidden}
+.lock,.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);z-index:10}.panel,.box{background:#fff;border-radius:28px;padding:28px;max-width:560px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+input{width:100%;padding:14px;border-radius:16px;border:1px solid #f3bfd0;margin:12px 0}button{border:none;background:var(--pink);color:#fff;padding:12px 18px;border-radius:999px;cursor:pointer}
+header{text-align:center;padding:38px 20px}.title{font-size:3rem;font-weight:800;color:var(--pink)}.sub{opacity:.75}.counter{display:inline-block;background:#fff;padding:10px 16px;border-radius:999px;margin-top:12px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.toolbar{text-align:center;padding:8px 20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;padding:20px;max-width:1100px;margin:auto}.card{background:#fff;border-radius:24px;padding:24px;text-align:center;cursor:pointer;transition:.25s;box-shadow:0 10px 30px rgba(0,0,0,.08)}.card:hover{transform:translateY(-8px)}
+.progress{max-width:700px;height:12px;background:#ffd3e3;border-radius:999px;margin:14px auto;overflow:hidden}.bar{height:100%;width:0;background:var(--pink)}
+.modal{display:none;background:rgba(0,0,0,.45)}.close{float:right;font-size:28px;cursor:pointer}.letter{white-space:pre-wrap;line-height:1.8;margin-top:12px}.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:900px;margin:20px auto;padding:0 20px}.ph{height:110px;background:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.hearts span{position:fixed;bottom:-30px;animation:rise linear forwards;font-size:22px}.note{position:fixed;right:15px;bottom:15px;background:#fff;padding:14px 16px;border-radius:18px;box-shadow:0 10px 24px rgba(0,0,0,.12)}@keyframes rise{to{transform:translateY(-110vh);opacity:0}}
+</style></head><body>
+<div class='lock' id='lock'><div class='panel'><h2>Hello My Love 💖</h2><p>Enter our password</p><input id='pw' type='password' placeholder='Secret word'><button onclick='unlock()'>Unlock</button><p id='err'></p></div></div>
+<header><div class='title'>FOR MY LOVE</div><div class='sub'>Our private little universe</div><div class='counter' id='days'></div><div class='progress'><div class='bar' id='bar'></div></div><div id='stats'></div></header>
+<div class='toolbar'><button onclick='randomLetter()'>Surprise Me 🎲</button><button onclick='toggleMusic()' id='musicBtn'>Play Music 🎵</button></div>
+<section class='grid' id='grid'></section>
+<section class='gallery'><div class='ph'>Add Photo 1</div><div class='ph'>Add Photo 2</div><div class='ph'>Add Photo 3</div></section>
+<div class='modal' id='modal'><div class='box'><span class='close' onclick='closeModal()'>×</span><h2 id='mt'></h2><div class='letter' id='mb'></div><br><button onclick='markRead()'>Mark Read ✓</button></div></div>
+<div class='note'>Hidden Note: I love you endlessly 💌</div>
+<audio id='music' loop><source src='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' type='audio/mpeg'></audio>
+<div class='hearts' id='hearts'></div>
+<script>
+const PASS='HONEYBUNCHSUGARPLUM';const START='2025-07-27';
+const cats=[{name:'Open When You Miss Me',icon:'💖',letters:['Missing you means loving you deeply.','I carry you in every heartbeat.']},{name:'Open When Sad',icon:'🌷',letters:['I am with you always.','You never face pain alone.']},{name:'Open Anytime',icon:'✨',letters:['Reminder: you are adored.','Forever starts every day with you.']}];
+let read=JSON.parse(localStorage.getItem('read')||'{}'),current='';
+function unlock(){if(document.getElementById('pw').value.toLowerCase()===PASS.toLowerCase()){lock.style.display='none'}else err.textContent='Wrong password baby 💔'}
+function days(){const d=Math.floor((new Date()-new Date(START))/86400000);document.getElementById('days').textContent=d+' Days Loving You'}
+function render(){grid.innerHTML='';cats.forEach((c,i)=>grid.innerHTML+=`<div class='card' onclick='openCat(${i})'><div style='font-size:42px'>${c.icon}</div><h3>${c.name}</h3><p>${c.letters.length} letters</p></div>`);prog()}
+function openCat(i){const c=cats[i];current=i+'-0';mt.textContent=c.name;mb.textContent=c.letters[0];modal.style.display='flex'}
+function closeModal(){modal.style.display='none'}
+function randomLetter(){const i=Math.floor(Math.random()*cats.length);openCat(i)}
+function markRead(){read[current]=1;localStorage.setItem('read',JSON.stringify(read));prog()}
+function prog(){const total=cats.reduce((a,b)=>a+b.letters.length,0),r=Object.keys(read).length,p=Math.round(r/total*100);bar.style.width=p+'%';stats.textContent=p+'% read ('+r+'/'+total+')'}
+function toggleMusic(){const m=music;if(m.paused){m.play();musicBtn.textContent='Pause Music 🎶'}else{m.pause();musicBtn.textContent='Play Music 🎵'}}
+setInterval(()=>{const s=document.createElement('span');s.textContent='❤️';s.style.left=Math.random()*100+'vw';s.style.animationDuration=(3+Math.random()*4)+'s';hearts.appendChild(s);setTimeout(()=>s.remove(),7000)},450);
+days();render();
+</script></body></html>
